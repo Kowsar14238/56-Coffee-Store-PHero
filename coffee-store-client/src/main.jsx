@@ -6,8 +6,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import AddCoffee from './Components/AddCoffee/addCoffee.jsx';
-import UpdateCoffee from './Components/UpdateCoffee/updateCoffee.jsx';
+import AddCoffee from './Components/Pages/addCoffee.jsx';
+import UpdateCoffee from './Components/Pages/updateCoffee.jsx';
 
 const router = createBrowserRouter([
   {
