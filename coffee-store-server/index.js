@@ -4,7 +4,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const { MongoClient, ServerApiVersion } = require('mongodb');//Step 6
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');//Step 6
 require('dotenv').config()//Step 6
 const port = process.env.PORT || 5000;
 
@@ -29,6 +29,45 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    
+    //Step 11: 
+    const coffeeCollection = client.db("56CoffeePHeroDB").collection('coffee');
+
+    //Step 12:Get all the coffee collections
+    app.get('/coffee', async(req, res)=>{
+      const cursor = coffeeCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    //Step 18:Update a coffee
+    app.get('/coffee/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await coffeeCollection.findOne(query);
+      res.send(result);
+    })
+
+    //Step 9: Store input values for sending to server
+    app.post('/coffee', async(req, res) =>{
+      const newCoffee = req.body;
+      console.log(newCoffee);
+      
+      //Step 11:
+      const result = await coffeeCollection.insertOne(newCoffee);
+      res.send(result);
+    });
+
+    //Step 16:Delete a coffee
+    app.delete('/coffee/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id)}
+      const result = await coffeeCollection.deleteOne(query);
+      res.send(result);
+    })
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
