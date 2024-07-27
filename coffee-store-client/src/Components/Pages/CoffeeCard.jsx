@@ -2,16 +2,15 @@
 import { FaEye } from "react-icons/fa";
 import { MdModeEditOutline } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 import Swal from "sweetalert2";
 
-const CoffeeCard = ({ coffee }) => {
+const CoffeeCard = ({ coffee, coffees, setCoffees }) => {
   const { _id, name, chef, price, photos } = coffee;
 
   //Step 15: Delete operation
   const handleDelete = (_id) => {
-    console.log(_id);
-
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -22,26 +21,27 @@ const CoffeeCard = ({ coffee }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        // console.log("Confirm");
-        //Step 17: Confirm Delete operation
         fetch(`http://localhost:5000/coffee/${_id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
             if (data.deletedCount > 0) {
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your coffee has been deleted.",
-                icon: "success",
-              });
+              Swal.fire("Deleted!", "Your coffee has been deleted.", "success");
+              // Update the state to remove the deleted coffee from the UI
+              setCoffees((prevCoffees) => prevCoffees.filter((cof) => cof._id !== _id));
+            } else {
+              Swal.fire("Error", "Coffee could not be deleted.", "error");
             }
+          })
+          .catch((error) => {
+            console.error("Error deleting coffee:", error);
+            Swal.fire("Error", "There was an error deleting the coffee.", "error");
           });
-          //Step 17: end
       }
     });
   };
+  
   //Step 15: end
 
   return (
@@ -70,24 +70,25 @@ const CoffeeCard = ({ coffee }) => {
               <li>
                 <a
                   className="tooltip tooltip-right bg-[#D2B48C] text-white"
-                  data-tip="View"
+                  data-tip="View" aria-label="View coffee details"
                 >
                   <FaEye />
                 </a>
               </li>
               <li>
-                <a
+                <Link
+                  to={`update-coffee/${_id}`}
                   className="tooltip tooltip-right bg-[#3C393B] text-white"
-                  data-tip="Update"
+                  data-tip="Update" aria-label="Update coffee details"
                 >
                   <MdModeEditOutline />
-                </a>
+                </Link>
               </li>
               <li>
                 <a
                   onClick={() => handleDelete(_id)}
                   className="tooltip tooltip-right bg-[#EA4744] text-white"
-                  data-tip="Delete"
+                  data-tip="Delete" aria-label="Delete coffee"
                 >
                   <MdDelete />
                 </a>
