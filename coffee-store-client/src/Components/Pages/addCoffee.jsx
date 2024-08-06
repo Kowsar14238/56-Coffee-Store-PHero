@@ -60,17 +60,20 @@ const AddCoffee = () => {
   //Step 7: Design the page and add form
   return (
     <div>
+      <button className="mx-2 my-5 p-2 rounded-md bg-slate-500 font-serif text-white">
+        <Link to={"/"} className="flex justify-left items-center">
+          <FaArrowLeft /> Home
+        </Link>
+      </button>
       <div>
-        <div>
-          <Link to={'/'} className="flex justify-left items-center">
-            <FaArrowLeft /> Back to home
-          </Link>
-        </div>
         <div className="grid gap-6 bg-[#F4F3F0] p-6">
           <div className="">
             <h2>Add New Coffee</h2>
             <p>
-              It is a long established fact that a reader will be distraceted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using Content here.
+              It is a long established fact that a reader will be distraceted by
+              the readable content of a page when looking at its layout. The
+              point of using Lorem Ipsum is that it has a more-or-less normal
+              distribution of letters, as opposed to using Content here.
             </p>
           </div>
           <form onSubmit={handleAddCoffee}>

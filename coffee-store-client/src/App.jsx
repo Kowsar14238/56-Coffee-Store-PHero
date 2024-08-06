@@ -2,6 +2,7 @@ import { useLoaderData } from "react-router-dom";
 import "./App.css";
 import CoffeeCard from "./Components/Pages/CoffeeCard";
 import { useState } from "react";
+import Navbar from "./Components/Navbar";
 
 function App() {
   //Step 14: Show the loading data
@@ -11,6 +12,7 @@ function App() {
 
   return (
     <>
+    <Navbar />
       <h1>Coffee Store {loadedCoffees.length}</h1>
       <div className="grid md:grid-cols-2 gap-4">
         {
