@@ -32,6 +32,8 @@ async function run() {
 
     //Step 11:
     const coffeeCollection = client.db("56CoffeePHeroDB").collection("coffee");
+    //Auth-Step 105:
+    const userCollection = client.db("56CoffeePHeroDB").collection("user");
 
     //Step 12:Get all the coffee collections
     app.get("/coffee", async (req, res) => {
@@ -97,6 +99,15 @@ async function run() {
       const result = await coffeeCollection.deleteOne(query);
       res.send(result);
     });
+
+    //User Api'
+    //Auth-Step 106:
+    app.post('/user', async(req, res) =>{
+      const user = req.body;
+      console.log(user);
+      const result = await userCollection.insertOne(user);
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

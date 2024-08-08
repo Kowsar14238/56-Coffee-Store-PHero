@@ -2,45 +2,52 @@
 
 import { useContext } from "react";
 import { FaArrowLeft } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../Providers/AuthProvider";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 
 const SignUp = () => {
   //Auth-Step 104:
   const { createUser } = useContext(AuthContext);
-  const navigate = useNavigate(); // Initialize useNavigate
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
+
     e.preventDefault();
     const form = e.target;
-    // const firstName = form.first_name.value;
-    // const lastName = form.last_name.value;
+    const firstName = form.first_name.value;
+    const lastName = form.last_name.value;
     const email = form.email.value;
-    const password = form.password.value; /*
-    const confirmPassword = form.confirm_password.value;
+    const password = form.password.value;
+    const phoneNumber = form.phone_number.value;
+    // console.log(firstName, lastName, email, password, confirmPassword, phoneNumber);
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }*/
-    // console.log(firstName, lastName, email, password, confirmPassword);
+    try {
+      const result = await createUser(email, password);
+      console.log(result);
+      const creationTime = result.user.metadata?.creationTime;
 
-    createUser(email, password)
-      .then((result) => {
-        Swal.fire({
-          title: "User created successfully",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then(() => {
-          navigate("/"); // Redirect to home page on clicking OK
-        });
-        // console.log(result.user);
-      })
-      .catch((error) => {
-        // console.error(error);
-        Swal.fire("Error creating user", error.message, "error");
+      // New user created, now send user data to MongoDB
+      const user = {
+        first_name: firstName,
+        last_name: lastName,
+        Phone: phoneNumber,
+        email,
+        creation_time: creationTime,
+      };
+
+      const response = await fetch("http://localhost:5000/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
       });
+
+      const data = await response.json();
+      console.log("User saved to MongoDB:", data);
+    } catch (error) {
+      console.error("Error creating user or saving to MongoDB:", error);
+    }
   };
 
   return (
@@ -134,6 +141,24 @@ const SignUp = () => {
               Confirm password
             </label>
           </div>
+          <div className="relative z-0 w-full mb-5 group">
+            <input
+              type="tel"
+              name="phone_number"
+              id="phone_number"
+              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder=" "
+              pattern="[0-9]{11}"
+              required
+            />
+            <label
+              htmlFor="phone_number"
+              className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            >
+              Phone Number
+            </label>
+          </div>
+
           <button
             type="submit"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
