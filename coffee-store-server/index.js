@@ -100,7 +100,7 @@ async function run() {
       res.send(result);
     });
 
-    //User Api'
+    //User Api's
     //Auth-Step 106:
     app.post('/user', async(req, res) =>{
       const user = req.body;
